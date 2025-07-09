@@ -1,0 +1,30 @@
+#app:
+#  name: @project.name@
+#  version: @project.version@
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      defer-datasource-initialization: false
+      jdbc:
+        time_zone: UTC
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/miniautorizador
+    username: root
+    password: ""
+
+  data:
+    web:
+      pageable:
+        default-page-size: 50
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+server:
+  port: 8080
