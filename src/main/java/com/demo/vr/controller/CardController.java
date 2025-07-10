@@ -5,9 +5,13 @@ import com.demo.vr.service.CardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 
 @RestController
@@ -23,6 +27,12 @@ public class CardController {
         return cardService.create(card);
     }
 
-
+    @GetMapping(
+            value = "/cartoes/{cardNumber}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BigDecimal obterSaldo(@PathVariable String cardNumber){
+        return cardService.findBalanceFromCard(cardNumber);
+    }
 
 }
