@@ -21,20 +21,20 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String numeroCartao;
-    private String senha;
-    private BigDecimal saldo = new BigDecimal(500);
+    private String cardNumber;
+    private String password;
+    private BigDecimal balance = new BigDecimal(500);
 
-    public Card(String numeroCartao, String senha) {
-        this.numeroCartao = numeroCartao;
-        this.senha = senha;
+    public Card(String cardNumber, String password) {
+        this.cardNumber = cardNumber;
+        this.password = password;
     }
 
     public boolean isCorrectMagicKey(String magicKey) {
-        return this.senha.equals(magicKey);
+        return this.password.equals(magicKey);
     }
 
     public boolean hasPositiveBalance(BigDecimal value) {
-        return this.saldo.compareTo(value) > 0;
+        return this.balance.compareTo(value) > 0;
     }
 }

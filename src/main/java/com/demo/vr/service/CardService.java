@@ -31,7 +31,7 @@ public class CardService {
     }
 
     public BigDecimal findBalanceFromCard(String cardNumber) {
-       return getCard(cardNumber).getSaldo();
+       return getCard(cardNumber).getBalance();
     }
 
     public String doTransaction(TransactionCardDTO transactionCardDTO) {
@@ -40,9 +40,9 @@ public class CardService {
         validateBalance(card, transactionCardDTO.getBalance());
 
 
-        var remainingBalance = card.getSaldo().subtract(transactionCardDTO.getBalance());
+        var remainingBalance = card.getBalance().subtract(transactionCardDTO.getBalance());
         var updatedCard = card.toBuilder()
-                .saldo(remainingBalance)
+                .balance(remainingBalance)
                 .build();
         cardRepository.save(updatedCard);
         return "OK";
@@ -55,16 +55,12 @@ public class CardService {
     private void validateMagicKey(Card card, String magicKey) {
         Optional.of(card)
                 .filter(c -> c.isCorrectMagicKey(magicKey))
-                .orElseThrow(() -> {
-                    return new InvalidPasswordException();
-                });
+                .orElseThrow(InvalidPasswordException::new);
     }
 
     private void validateBalance(Card card, BigDecimal value) {
         Optional.of(card)
                 .filter(c -> c.hasPositiveBalance(value))
-                .orElseThrow(() -> {
-                    return new CardHasntSufficientBalanceException();
-                });
+                .orElseThrow(CardHasntSufficientBalanceException::new);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class CardConverter {
 
     public CartaoDTO toDTO(Card card){
-        return new CartaoDTO(card.getNumeroCartao(), card.getSenha());
+        return new CartaoDTO(card.getCardNumber(), card.getPassword());
     }
     public Card toDomain(CartaoDTO card){
         return new Card(card.getNumeroCartao(), card.getSenha());

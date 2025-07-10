@@ -23,7 +23,7 @@ public class CardController {
     @PostMapping(
             value = "/cartoes",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CartaoDTO criarCartao(@Valid @RequestBody CartaoDTO card){
+    public CartaoDTO createCard(@Valid @RequestBody CartaoDTO card){
         return cardService.create(card);
     }
 
@@ -31,7 +31,7 @@ public class CardController {
             value = "/cartoes/{cardNumber}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public BigDecimal obterSaldo(@PathVariable String cardNumber){
+    public BigDecimal getBalance(@PathVariable String cardNumber){
         return cardService.findBalanceFromCard(cardNumber);
     }
 
