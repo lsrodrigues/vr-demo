@@ -35,6 +35,6 @@ public class Card {
     }
 
     public boolean hasPositiveBalance(BigDecimal value) {
-        return this.balance.compareTo(value) > 0;
+        return this.balance.compareTo(value) >= 0;
     }
 }

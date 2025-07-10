@@ -4,6 +4,7 @@ import com.demo.vr.converter.CardConverter;
 import com.demo.vr.dto.CartaoDTO;
 import com.demo.vr.dto.TransactionCardDTO;
 import com.demo.vr.exception.CardCreationException;
+import com.demo.vr.exception.CardHasntSufficientBalanceException;
 import com.demo.vr.exception.CardNotFoundException;
 import com.demo.vr.exception.InvalidPasswordException;
 import com.demo.vr.model.Card;
@@ -22,7 +23,7 @@ public class CardService {
     private final CardConverter cardConverter;
 
     public CartaoDTO create(CartaoDTO card) {
-        cardRepository.findByNumeroCartao(card.getNumeroCartao())
+        cardRepository.findByCardNumber(card.getNumeroCartao())
                 .ifPresent(c -> {
                     throw new CardCreationException(card);
                 });
@@ -49,7 +50,7 @@ public class CardService {
     }
 
     private Card getCard(String cardNumber) {
-        return cardRepository.findByNumeroCartao(cardNumber).orElseThrow(CardNotFoundException::new);
+        return cardRepository.findByCardNumber(cardNumber).orElseThrow(CardNotFoundException::new);
     }
 
     private void validateMagicKey(Card card, String magicKey) {
