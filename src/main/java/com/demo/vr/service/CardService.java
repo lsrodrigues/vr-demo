@@ -2,13 +2,17 @@ package com.demo.vr.service;
 
 import com.demo.vr.converter.CardConverter;
 import com.demo.vr.dto.CartaoDTO;
+import com.demo.vr.dto.TransactionCardDTO;
 import com.demo.vr.exception.CardCreationException;
 import com.demo.vr.exception.CardNotFoundException;
+import com.demo.vr.exception.InvalidPasswordException;
+import com.demo.vr.model.Card;
 import com.demo.vr.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +31,40 @@ public class CardService {
     }
 
     public BigDecimal findBalanceFromCard(String cardNumber) {
-        var card = cardRepository.findByNumeroCartao(cardNumber).orElseThrow(CardNotFoundException::new);
-        return card.getSaldo();
+       return getCard(cardNumber).getSaldo();
+    }
+
+    public String doTransaction(TransactionCardDTO transactionCardDTO) {
+        var card = getCard(transactionCardDTO.getNumeroCartao());
+        validateMagicKey(card, transactionCardDTO.getSenha());
+        validateBalance(card, transactionCardDTO.getBalance());
+
+
+        var remainingBalance = card.getSaldo().subtract(transactionCardDTO.getBalance());
+        var updatedCard = card.toBuilder()
+                .saldo(remainingBalance)
+                .build();
+        cardRepository.save(updatedCard);
+        return "OK";
+    }
+
+    private Card getCard(String cardNumber) {
+        return cardRepository.findByNumeroCartao(cardNumber).orElseThrow(CardNotFoundException::new);
+    }
+
+    private void validateMagicKey(Card card, String magicKey) {
+        Optional.of(card)
+                .filter(c -> c.isCorrectMagicKey(magicKey))
+                .orElseThrow(() -> {
+                    return new InvalidPasswordException();
+                });
+    }
+
+    private void validateBalance(Card card, BigDecimal value) {
+        Optional.of(card)
+                .filter(c -> c.hasPositiveBalance(value))
+                .orElseThrow(() -> {
+                    return new CardHasntSufficientBalanceException();
+                });
     }
 }
